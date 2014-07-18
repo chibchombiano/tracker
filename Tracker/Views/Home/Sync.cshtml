@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Tracker.Models.GoogleMarker>
+@using System.Threading;
+@using System.Globalization;
+@{
+    ViewBag.Title = "Sync";
+    Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+}
+<script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+    var bounds = new google.maps.LatLngBounds();
+    var options = {
+        zoom : 14,
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+    var googleMap = new google.maps.Map($("#map")[0],options);
+    var infoWindow = new google.maps.InfoWindow({ content: "Cargando..." });
+
+
+    @foreach (var marker in Model)
+    {
+    <text>
+        var point = new google.maps.LatLng(@marker.Latitude, @marker.Longitude);
+        bounds.extend(point);
+
+        var marker = new google.maps.Marker({
+                position: point,
+                map: googleMap,
+                icon:'/Content/images/cloud_marker.png',
+                html: '@marker.InfoWindow'          
+            });
+
+        google.maps.event.addListener(marker, "click", function () {
+                infoWindow.setContent(this.html);
+                infoWindow.open(googleMap, this);
+            });
+    </text>
+    }
+    googleMap.fitBounds(bounds);
+    });
+</script>
+<h2>
+    Sync</h2>
+<div id="map" style="width: 800px; height: 500px;">
+</div>

@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "Async";
+}
+
+
+
+
+<script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+
+        var bounds = new google.maps.LatLngBounds();
+        var options = {
+            zoom: 14,
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        };
+        var googleMap = new google.maps.Map($("#map")[0], options);
+        var infoWindow = new google.maps.InfoWindow({ content: "Cargando..." });
+
+        $.ajax({
+            type: "POST",
+            url: "GetMarkersAsync",
+            data: { imei: '355227042112508' },
+            datatype: "json",
+            success: function (data) {
+
+                var myLatlng = new google.maps.LatLng(data[0].Latitude, data[0].Longitude);
+                googleMap.setCenter(myLatlng);
+                googleMap.setZoom(18);
+
+                for (var i = 0; i < data.length; i++) {
+
+                    var point = new google.maps.LatLng(data[i].Latitude, data[i].Longitude);
+
+                    bounds.extend(point);
+
+                    var marker = new google.maps.Marker({
+                        position: point,
+                        map: googleMap,
+                        html: data[i].InfoWindow
+                    });
+
+                    google.maps.event.addListener(marker, "click", function () {
+                        infoWindow.setContent(this.html);
+                        infoWindow.open(googleMap, this);
+                    });
+                }
+            }
+        });
+
+        googleMap.fitBounds(bounds);
+    });
+</script>
+<h2>
+    Async</h2>
+<div id="map" style="width: 800px; height: 500px;">
+</div>

@@ -1,0 +1,57 @@
+﻿@model Tracker.ApplicationUser
+
+@{
+	ViewBag.Title = "Mapa gps";
+}
+
+<h2>Inicio</h2>
+
+ <script src="~/Scripts/jquery.signalR-2.1.0.min.js"></script>
+ <script src="~/signalr/hubs"></script> 
+
+ <script src="~/Util/Mapas.js"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function () {
+		imei = '@Model.Imei';
+		iniciarMapa();
+	});
+
+</script>
+
+
+<div id="map" style="width: 800px; height: 500px;">
+</div>
+
+<br />
+<br />
+
+<h3>Seleccione una fecha para visualizarla</h3>
+
+<div class="container">
+	<div class="row">
+		<div class='col-sm-6'>
+			<div class="form-group">
+				<div class='input-group date' id='datetimepicker1'>
+					<input type='text' class="form-control" />
+					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function () {
+				$('#datetimepicker1').datetimepicker().on('dp.change', function (e) {
+					fechaSeleccionada = e.date;
+					limpiarMarcadores();
+					obtenerFechas();
+				});
+			});
+		</script>
+	</div>
+</div>
+
+
+
+
